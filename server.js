@@ -502,8 +502,14 @@ app.get('/api/feeds', async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
+
+// Export for Vercel serverless
+module.exports = app;
+
+// Local development server
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`
 ╔═══════════════════════════════════════════╗
 ║        AI RADAR - Developer Edition       ║
 ║                                           ║
@@ -512,4 +518,5 @@ app.listen(PORT, () => {
 ║   Sources: ${RSS_SOURCES.length} feeds                       ║
 ╚═══════════════════════════════════════════╝
     `);
-});
+    });
+}
