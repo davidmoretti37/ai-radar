@@ -148,6 +148,40 @@
             gap: 1.5rem;
         }
 
+        .notes-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .notes-toggle span {
+            font-size: 0.9rem;
+        }
+
+        .notes-toggle-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 999px;
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .notes-toggle.active {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+
         .last-updated {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75rem;
@@ -647,6 +681,154 @@
             font-size: 0.85rem;
         }
 
+        /* Notes layout */
+        .notes-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .notes-list,
+        .notes-detail {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 1.25rem;
+        }
+
+        .notes-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .notes-item {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .notes-item:last-child {
+            border-bottom: none;
+        }
+
+        .notes-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .notes-item.active {
+            background: var(--accent-glow);
+            border-left: 2px solid var(--accent);
+        }
+
+        .notes-item-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+
+        .notes-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .notes-detail h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .notes-detail a.article-link {
+            font-size: 0.78rem;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .notes-detail a.article-link:hover {
+            text-decoration: underline;
+        }
+
+        .notes-detail-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.75rem 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .notes-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+
+        .notes-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: var(--accent-glow);
+            padding: 0.15rem 0.45rem;
+            border-radius: 999px;
+            margin-left: 0.25rem;
+        }
+
+        .notes-badge svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .bookmark-button {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        .bookmark-button:hover {
+            color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .bookmark-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .bookmark-button.active {
+            color: var(--accent);
+        }
+
         /* Error state */
         .error-state {
             text-align: center;
@@ -720,6 +902,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .notes-layout {
+                grid-template-columns: 1fr;
+            }
+
             .article-item {
                 padding: 0.875rem;
             }
@@ -777,6 +963,10 @@
                 <h1>AI <span>Radar</span></h1>
             </div>
             <div class="header-right">
+                <button id="notesToggle" class="notes-toggle" type="button">
+                    <span>📝 Notes</span>
+                    <span id="notesCount" class="notes-toggle-count">0</span>
+                </button>
                 <div class="search-container">
                     <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -867,6 +1057,45 @@
                 </div>
             </div>
         </section>
+
+        <!-- Notes View -->
+        <section id="notesSection" style="display:none; margin-top: 2rem;">
+            <h2 class="section-title">
+                <span class="icon">📝</span>
+                Notes on Saved Articles
+                <span class="notes-badge" id="notesBadge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="M5 6h14"></path>
+                        <path d="M5 18h8"></path>
+                    </svg>
+                    synced locally
+                </span>
+            </h2>
+            <div class="notes-layout">
+                <div class="notes-list">
+                    <h3 class="section-title" style="margin-bottom:0.5rem;">
+                        <span class="icon">📌</span> Saved Items
+                    </h3>
+                    <div id="notesListContainer">
+                        <div class="notes-empty">
+                            You haven't saved any articles yet.<br />
+                            Tap the bookmark icon on an article to start a note.
+                        </div>
+                    </div>
+                </div>
+                <div class="notes-detail" id="notesDetail">
+                    <h3>Pick a saved article</h3>
+                    <p class="notes-detail-meta">
+                        Select an item on the left to view the content you liked and write your notes.
+                    </p>
+                    <textarea class="notes-textarea" disabled placeholder="Your notes will appear here once you select an article."></textarea>
+                    <p class="notes-hint">
+                        Notes are stored in your browser (local only) and stay even if you refresh.
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
@@ -875,6 +1104,8 @@
         let allData = null;
         let currentSearchQuery = '';
         let searchTimeout = null;
+        let savedNotes = [];
+        let activeNoteLink = null;
 
         function formatTimeAgo(dateString) {
             const date = new Date(dateString);
@@ -978,10 +1209,15 @@
             // Show/hide special sections based on category
             const highlightsSection = document.getElementById('highlightsSection');
             const twoColumnSection = document.getElementById('twoColumnSection');
+            const feedSection = document.querySelector('.feed-section');
+            const notesSection = document.getElementById('notesSection');
 
             if (category === 'all' && !currentSearchQuery) {
-                highlightsSection.style.display = 'block';
-                twoColumnSection.style.display = 'grid';
+                if (notesSection.style.display === 'none') {
+                    highlightsSection.style.display = 'block';
+                    twoColumnSection.style.display = 'grid';
+                    feedSection.style.display = 'block';
+                }
             } else {
                 highlightsSection.style.display = 'none';
                 twoColumnSection.style.display = 'none';
@@ -1020,6 +1256,161 @@
                 filterByCategory(e.target.dataset.category);
             }
         });
+
+        // Notes helpers
+        function loadSavedNotes() {
+            try {
+                const raw = localStorage.getItem('aiRadarNotes');
+                savedNotes = raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                savedNotes = [];
+            }
+            updateNotesCount();
+        }
+
+        function persistSavedNotes() {
+            localStorage.setItem('aiRadarNotes', JSON.stringify(savedNotes));
+            updateNotesCount();
+        }
+
+        function updateNotesCount() {
+            const countEl = document.getElementById('notesCount');
+            if (countEl) {
+                countEl.textContent = savedNotes.length;
+            }
+        }
+
+        function isSaved(link) {
+            return savedNotes.some(n => n.link === link);
+        }
+
+        function toggleSave(article) {
+            if (!article || !article.link) return;
+            const existingIndex = savedNotes.findIndex(n => n.link === article.link);
+            if (existingIndex >= 0) {
+                savedNotes.splice(existingIndex, 1);
+                if (activeNoteLink === article.link) {
+                    activeNoteLink = null;
+                }
+            } else {
+                savedNotes.unshift({
+                    link: article.link,
+                    title: article.title || '',
+                    source: article.source || '',
+                    category: article.category || '',
+                    description: article.description || '',
+                    pubDate: article.pubDate || new Date().toISOString(),
+                    note: ''
+                });
+            }
+            persistSavedNotes();
+            renderNotesList();
+            refreshBookmarkButtons();
+        }
+
+        function renderNotesList() {
+            const container = document.getElementById('notesListContainer');
+            if (!container) return;
+            if (!savedNotes.length) {
+                container.innerHTML = `
+                    <div class="notes-empty">
+                        You haven't saved any articles yet.<br />
+                        Tap the bookmark icon on an article to start a note.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = savedNotes.map(note => `
+                <div class="notes-item ${note.link === activeNoteLink ? 'active' : ''}" data-link="${note.link}">
+                    <div class="notes-item-title">${note.title}</div>
+                    <div class="notes-item-meta">
+                        <span>${note.source}</span>
+                        <span>${formatTimeAgo(note.pubDate)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderActiveNote() {
+            const detail = document.getElementById('notesDetail');
+            if (!detail) return;
+
+            const textarea = detail.querySelector('.notes-textarea');
+            if (!activeNoteLink) {
+                detail.querySelector('h3').textContent = 'Pick a saved article';
+                detail.querySelector('.notes-detail-meta').textContent =
+                    'Select an item on the left to view the content you liked and write your notes.';
+                if (textarea) {
+                    textarea.value = '';
+                    textarea.disabled = true;
+                    textarea.placeholder = 'Your notes will appear here once you select an article.';
+                }
+                return;
+            }
+
+            const note = savedNotes.find(n => n.link === activeNoteLink);
+            if (!note) {
+                activeNoteLink = null;
+                renderActiveNote();
+                return;
+            }
+
+            detail.querySelector('h3').textContent = note.title || 'Saved article';
+            detail.querySelector('.notes-detail-meta').innerHTML = `
+                <a href="${note.link}" target="_blank" rel="noopener noreferrer" class="article-link">
+                    Open original article ↗
+                </a>
+                <div>${note.source} • ${formatTimeAgo(note.pubDate)}</div>
+            `;
+            if (textarea) {
+                textarea.disabled = false;
+                textarea.value = note.note || '';
+                textarea.placeholder = 'Capture your takeaways, ideas, and follow-ups for this article...';
+            }
+        }
+
+        function attachNotesListHandler() {
+            const container = document.getElementById('notesListContainer');
+            if (!container) return;
+            container.addEventListener('click', (e) => {
+                const item = e.target.closest('.notes-item');
+                if (!item) return;
+                const link = item.getAttribute('data-link');
+                activeNoteLink = link;
+                renderNotesList();
+                renderActiveNote();
+            });
+        }
+
+        function attachNotesTextareaHandler() {
+            const detail = document.getElementById('notesDetail');
+            if (!detail) return;
+            const textarea = detail.querySelector('.notes-textarea');
+            if (!textarea) return;
+            textarea.addEventListener('input', (e) => {
+                if (!activeNoteLink) return;
+                const note = savedNotes.find(n => n.link === activeNoteLink);
+                if (!note) return;
+                note.note = e.target.value;
+                persistSavedNotes();
+            });
+        }
+
+        function refreshBookmarkButtons() {
+            document.querySelectorAll('[data-bookmark-link]').forEach(btn => {
+                const link = btn.getAttribute('data-bookmark-link');
+                if (isSaved(link)) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
+                    btn.title = 'Remove from notes';
+                } else {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                    btn.title = 'Save to notes';
+                }
+            });
+        }
 
         async function fetchFeeds() {
             const refreshBtn = document.querySelector('.refresh-btn');
@@ -1064,6 +1455,7 @@
 
                 // Apply current category filter
                 filterByCategory(currentCategory);
+                refreshBookmarkButtons();
 
             } catch (error) {
                 console.error('Error:', error);
@@ -1111,6 +1503,7 @@
                 // Hide special sections when searching
                 highlightsSection.style.display = 'none';
                 twoColumnSection.style.display = 'none';
+                document.querySelector('.feed-section').style.display = 'block';
 
                 // Update count and render
                 document.getElementById('totalArticles').textContent = filteredArticles.length;
@@ -1127,8 +1520,11 @@
                 }
             } else {
                 // No search - show everything normally
-                highlightsSection.style.display = 'block';
-                twoColumnSection.style.display = 'grid';
+                if (document.getElementById('notesSection').style.display === 'none') {
+                    highlightsSection.style.display = 'block';
+                    twoColumnSection.style.display = 'grid';
+                    document.querySelector('.feed-section').style.display = 'block';
+                }
 
                 document.getElementById('totalArticles').textContent = allData.articles.length;
                 renderHighlights(allData.highlights);
@@ -1166,12 +1562,130 @@
             searchArticles('');
         });
 
+        // Notes toggle (switch between main feed and notes view)
+        const notesToggle = document.getElementById('notesToggle');
+        const notesSection = document.getElementById('notesSection');
+        const feedSection = document.querySelector('.feed-section');
+        const highlightsSection = document.getElementById('highlightsSection');
+        const twoColumnSection = document.getElementById('twoColumnSection');
+
+        notesToggle.addEventListener('click', () => {
+            const isNotesVisible = notesSection.style.display !== 'none';
+            if (isNotesVisible) {
+                // Back to main feed
+                notesSection.style.display = 'none';
+                feedSection.style.display = 'block';
+                if (!currentSearchQuery && currentCategory === 'all') {
+                    highlightsSection.style.display = 'block';
+                    twoColumnSection.style.display = 'grid';
+                }
+                notesToggle.classList.remove('active');
+            } else {
+                // Show notes
+                notesSection.style.display = 'block';
+                feedSection.style.display = 'none';
+                highlightsSection.style.display = 'none';
+                twoColumnSection.style.display = 'none';
+                notesToggle.classList.add('active');
+            }
+        });
+
+        // Override renderers to inject bookmark buttons
+        const originalRenderHighlights = renderHighlights;
+        renderHighlights = function(highlights) {
+            const grid = document.getElementById('highlightsGrid');
+            if (!highlights || highlights.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No highlights yet</div>';
+                return;
+            }
+            grid.innerHTML = highlights.slice(0, 6).map((article, i) => `
+                <div class="highlight-card" style="animation-delay: ${i * 0.05}s">
+                    <div style="position:absolute; top:10px; right:10px; z-index:2;">
+                        <button
+                            class="bookmark-button"
+                            type="button"
+                            data-bookmark-link="${article.link}"
+                            data-bookmark-source="highlights"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <div class="highlight-meta">
+                            <span class="article-source" data-category="${article.category}">${article.source}</span>
+                            <span class="article-time">${formatTimeAgo(article.pubDate)}</span>
+                        </div>
+                        <h3 class="highlight-title">${article.title}</h3>
+                        ${article.description ? `<p class="highlight-desc">${article.description}</p>` : ''}
+                    </a>
+                </div>
+            `).join('');
+            refreshBookmarkButtons();
+        };
+
+        const originalRenderArticles = renderArticles;
+        renderArticles = function(articles) {
+            const feed = document.getElementById('newsFeed');
+            if (!articles || articles.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No articles found</div>';
+                return;
+            }
+            feed.innerHTML = articles.map((article, i) => `
+                <div class="article-item" style="animation-delay: ${Math.min(i * 0.02, 0.5)}s">
+                    <div style="position:absolute; top:10px; right:10px; z-index:2;">
+                        <button
+                            class="bookmark-button"
+                            type="button"
+                            data-bookmark-link="${article.link}"
+                            data-bookmark-source="feed"
+                        >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <div class="article-top">
+                            <div class="article-meta">
+                                <span class="article-source" data-category="${article.category}">${article.source}</span>
+                                ${article.isRelease && article.version ? `<span class="release-badge">${article.version}</span>` : ''}
+                            </div>
+                            <span class="article-time">${formatTimeAgo(article.pubDate)}</span>
+                        </div>
+                        <h2 class="article-title">${article.title}</h2>
+                        ${article.description ? `<p class="article-description">${article.description}</p>` : ''}
+                    </a>
+                </div>
+            `).join('');
+            refreshBookmarkButtons();
+        };
+
+        // Global bookmark click handler
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-bookmark-link]');
+            if (!btn) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const link = btn.getAttribute('data-bookmark-link');
+            if (!allData || !allData.articles) return;
+            const article = allData.articles.find(a => a.link === link);
+            if (!article) return;
+            toggleSave(article);
+        });
+
+        // Initialisation
+        loadSavedNotes();
+        attachNotesListHandler();
+        attachNotesTextareaHandler();
+
         // Initial fetch
         fetchFeeds();
 
-        // Auto-refresh every 10 minutes (only if not searching)
+        // Auto-refresh every 10 minutes (only if not searching and not on notes page)
         setInterval(() => {
-            if (!currentSearchQuery) {
+            if (!currentSearchQuery && document.getElementById('notesSection').style.display === 'none') {
                 fetchFeeds();
             }
         }, 10 * 60 * 1000);
