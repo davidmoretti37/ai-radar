@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Radar | Your AI Developer Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0b;
+            --bg-secondary: #111113;
+            --bg-card: #16161a;
+            --bg-card-hover: #1c1c21;
+            --accent: #00ff88;
+            --accent-dim: #00ff8833;
+            --accent-glow: #00ff8815;
+            --text-primary: #f0f0f0;
+            --text-secondary: #8b8b8b;
+            --text-muted: #5a5a5a;
+            --border: #2a2a2e;
+            --border-light: #3a3a3e;
+
+            /* Category colors */
+            --cat-agents: #00ff88;
+            --cat-llms: #8b5cf6;
+            --cat-local: #f59e0b;
+            --cat-devtools: #3b82f6;
+            --cat-security: #ef4444;
+            --cat-learning: #10b981;
+            --cat-research: #ec4899;
+            --cat-news: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 11, 0.95);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* New Animated Radar Logo */
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            position: relative;
+        }
+
+        .radar-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .radar-bg {
+            fill: var(--bg-card);
+            stroke: var(--accent);
+            stroke-width: 1.5;
+        }
+
+        .radar-ring {
+            fill: none;
+            stroke: var(--accent-dim);
+            stroke-width: 1;
+        }
+
+        .radar-sweep {
+            fill: url(#sweepGradient);
+            transform-origin: center;
+            animation: radarSweep 3s linear infinite;
+        }
+
+        .radar-dot {
+            fill: var(--accent);
+            filter: drop-shadow(0 0 4px var(--accent));
+        }
+
+        .radar-center {
+            fill: var(--accent);
+            filter: drop-shadow(0 0 6px var(--accent));
+        }
+
+        @keyframes radarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .logo h1 span {
+            color: var(--accent);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .last-updated {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-dim); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 10px transparent; }
+        }
+
+        /* Search Container */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        #searchInput {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 2.5rem 0.5rem 2.5rem;
+            border-radius: 8px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            width: 220px;
+            transition: all 0.2s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--accent);
+            width: 280px;
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        #searchInput::placeholder {
+            color: var(--text-muted);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            color: var(--text-primary);
+            background: var(--border);
+        }
+
+        .refresh-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+        }
+
+        .refresh-btn.loading svg {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 3rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .cat-tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-tab:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+
+        .cat-tab.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title .icon {
+            font-size: 1rem;
+        }
+
+        /* Highlights Section */
+        .highlights-section {
+            margin-bottom: 2rem;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .highlight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .highlight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .highlight-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .highlight-card a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .highlight-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .column-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .column-section .section-title {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Release Item */
+        .release-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .release-item:last-child {
+            border-bottom: none;
+        }
+
+        .release-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: var(--cat-local);
+            color: #000;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .release-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .release-title:hover {
+            color: var(--accent);
+        }
+
+        .release-source {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Learning Item */
+        .learning-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .learning-item:last-child {
+            border-bottom: none;
+        }
+
+        .learning-type {
+            font-size: 1rem;
+        }
+
+        .learning-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .learning-title:hover {
+            color: var(--accent);
+        }
+
+        .learning-source {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* News Feed Section */
+        .feed-section {
+            margin-top: 2rem;
+        }
+
+        .news-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .article-item {
+            background: var(--bg-card);
+            padding: 1rem 1.25rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .article-item:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .article-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .article-item:hover::before {
+            opacity: 1;
+        }
+
+        .article-item a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .article-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            gap: 0.5rem;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-source {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid;
+        }
+
+        .article-source[data-category="agents"] { color: var(--cat-agents); border-color: var(--cat-agents); background: rgba(0,255,136,0.1); }
+        .article-source[data-category="llms"] { color: var(--cat-llms); border-color: var(--cat-llms); background: rgba(139,92,246,0.1); }
+        .article-source[data-category="local_ai"] { color: var(--cat-local); border-color: var(--cat-local); background: rgba(245,158,11,0.1); }
+        .article-source[data-category="devtools"] { color: var(--cat-devtools); border-color: var(--cat-devtools); background: rgba(59,130,246,0.1); }
+        .article-source[data-category="security"] { color: var(--cat-security); border-color: var(--cat-security); background: rgba(239,68,68,0.1); }
+        .article-source[data-category="learning"] { color: var(--cat-learning); border-color: var(--cat-learning); background: rgba(16,185,129,0.1); }
+        .article-source[data-category="research"] { color: var(--cat-research); border-color: var(--cat-research); background: rgba(236,72,153,0.1); }
+        .article-source[data-category="news"] { color: var(--cat-news); border-color: var(--cat-news); background: rgba(107,114,128,0.1); }
+
+        .article-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .article-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .article-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Loading state */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            gap: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Error state */
+        .error-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
+
+        .error-state h3 {
+            color: #ff4757;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animation for articles */
+        .article-item, .highlight-card {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .search-container {
+                order: 3;
+                width: 100%;
+            }
+
+            #searchInput {
+                width: 100%;
+            }
+
+            #searchInput:focus {
+                width: 100%;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .stats-bar {
+                gap: 1.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .article-item {
+                padding: 0.875rem;
+            }
+
+            .category-tabs {
+                margin: 0 -1rem 1.5rem;
+                padding: 0 1rem 0.5rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="radar-svg" viewBox="0 0 44 44">
+                        <defs>
+                            <linearGradient id="sweepGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="transparent"/>
+                                <stop offset="50%" stop-color="rgba(0,255,136,0.3)"/>
+                                <stop offset="100%" stop-color="rgba(0,255,136,0.6)"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Background circle -->
+                        <circle class="radar-bg" cx="22" cy="22" r="20"/>
+                        <!-- Rings -->
+                        <circle class="radar-ring" cx="22" cy="22" r="15"/>
+                        <circle class="radar-ring" cx="22" cy="22" r="10"/>
+                        <circle class="radar-ring" cx="22" cy="22" r="5"/>
+                        <!-- Sweep -->
+                        <path class="radar-sweep" d="M22,22 L22,2 A20,20 0 0,1 42,22 Z"/>
+                        <!-- Dots (data points) -->
+                        <circle class="radar-dot" cx="28" cy="12" r="2"/>
+                        <circle class="radar-dot" cx="14" cy="18" r="1.5"/>
+                        <circle class="radar-dot" cx="32" cy="28" r="1.5"/>
+                        <!-- Center -->
+                        <circle class="radar-center" cx="22" cy="22" r="2"/>
+                    </svg>
+                </div>
+                <h1>AI <span>Radar</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="search-container">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search articles..." />
+                    <button id="clearSearch" class="clear-btn" style="display: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="last-updated">
+                    <span class="pulse"></span>
+                    <span id="lastUpdated">Loading...</span>
+                </div>
+                <button class="refresh-btn" onclick="fetchFeeds()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-value" id="totalArticles">-</span>
+                <span class="stat-label">Articles</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="totalSources">-</span>
+                <span class="stat-label">Sources</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="newToday">-</span>
+                <span class="stat-label">Last 24h</span>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <nav class="category-tabs" id="categoryTabs">
+            <button class="cat-tab active" data-category="all">All</button>
+            <button class="cat-tab" data-category="agents">Agents</button>
+            <button class="cat-tab" data-category="llms">LLMs</button>
+            <button class="cat-tab" data-category="local_ai">Local AI</button>
+            <button class="cat-tab" data-category="devtools">Dev Tools</button>
+            <button class="cat-tab" data-category="learning">Learning</button>
+            <button class="cat-tab" data-category="research">Research</button>
+            <button class="cat-tab" data-category="news">News</button>
+        </nav>
+
+        <!-- Highlights Section -->
+        <section class="highlights-section" id="highlightsSection">
+            <h2 class="section-title"><span class="icon">⭐</span> Daily Highlights</h2>
+            <div class="highlights-grid" id="highlightsGrid">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Column: Releases & Learning -->
+        <div class="two-column" id="twoColumnSection">
+            <section class="column-section">
+                <h2 class="section-title"><span class="icon">🚀</span> Release Alerts</h2>
+                <div id="releasesList">
+                    <div class="empty-state">Loading releases...</div>
+                </div>
+            </section>
+            <section class="column-section">
+                <h2 class="section-title"><span class="icon">📚</span> Learning Feed</h2>
+                <div id="learningList">
+                    <div class="empty-state">Loading tutorials...</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- All Articles Feed -->
+        <section class="feed-section">
+            <h2 class="section-title"><span class="icon">📰</span> All Articles</h2>
+            <div class="news-feed" id="newsFeed">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Fetching AI news from 240+ sources...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // State
+        let currentCategory = 'all';
+        let allData = null;
+        let currentSearchQuery = '';
+        let searchTimeout = null;
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function renderHighlights(highlights) {
+            const grid = document.getElementById('highlightsGrid');
+            if (!highlights || highlights.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No highlights yet</div>';
+                return;
+            }
+            grid.innerHTML = highlights.slice(0, 6).map((article, i) => `
+                <div class="highlight-card" style="animation-delay: ${i * 0.05}s">
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <div class="highlight-meta">
+                            <span class="article-source" data-category="${article.category}">${article.source}</span>
+                            <span class="article-time">${formatTimeAgo(article.pubDate)}</span>
+                        </div>
+                        <h3 class="highlight-title">${article.title}</h3>
+                        ${article.description ? `<p class="highlight-desc">${article.description}</p>` : ''}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function renderReleases(releases) {
+            const list = document.getElementById('releasesList');
+            if (!releases || releases.length === 0) {
+                list.innerHTML = '<div class="empty-state">No recent releases</div>';
+                return;
+            }
+            list.innerHTML = releases.slice(0, 6).map(article => `
+                <div class="release-item">
+                    <span class="release-badge">${article.version || 'NEW'}</span>
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <span class="release-title">${article.title}</span>
+                    </a>
+                    <span class="release-source">${article.source.replace(' Releases', '')}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderLearning(tutorials) {
+            const list = document.getElementById('learningList');
+            if (!tutorials || tutorials.length === 0) {
+                list.innerHTML = '<div class="empty-state">No tutorials found</div>';
+                return;
+            }
+            list.innerHTML = tutorials.slice(0, 6).map(article => `
+                <div class="learning-item">
+                    <span class="learning-type">${article.source.includes('YouTube') ? '📺' : '📄'}</span>
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <span class="learning-title">${article.title}</span>
+                    </a>
+                    <span class="learning-source">${article.source}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderArticles(articles) {
+            const feed = document.getElementById('newsFeed');
+            if (!articles || articles.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No articles found</div>';
+                return;
+            }
+            feed.innerHTML = articles.map((article, i) => `
+                <div class="article-item" style="animation-delay: ${Math.min(i * 0.02, 0.5)}s">
+                    <a href="${article.link}" target="_blank" rel="noopener noreferrer">
+                        <div class="article-top">
+                            <div class="article-meta">
+                                <span class="article-source" data-category="${article.category}">${article.source}</span>
+                                ${article.isRelease && article.version ? `<span class="release-badge">${article.version}</span>` : ''}
+                            </div>
+                            <span class="article-time">${formatTimeAgo(article.pubDate)}</span>
+                        </div>
+                        <h2 class="article-title">${article.title}</h2>
+                        ${article.description ? `<p class="article-description">${article.description}</p>` : ''}
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+
+            // Update tab states
+            document.querySelectorAll('.cat-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+
+            // Show/hide special sections based on category
+            const highlightsSection = document.getElementById('highlightsSection');
+            const twoColumnSection = document.getElementById('twoColumnSection');
+
+            if (category === 'all' && !currentSearchQuery) {
+                highlightsSection.style.display = 'block';
+                twoColumnSection.style.display = 'grid';
+            } else {
+                highlightsSection.style.display = 'none';
+                twoColumnSection.style.display = 'none';
+            }
+
+            // Filter and render articles (respecting current search)
+            if (allData) {
+                let articles = allData.articles;
+
+                // Apply search filter first
+                if (currentSearchQuery) {
+                    const searchLower = currentSearchQuery.toLowerCase();
+                    articles = articles.filter(a => {
+                        const title = (a.title || '').toLowerCase();
+                        const description = (a.description || '').toLowerCase();
+                        const source = (a.source || '').toLowerCase();
+                        return title.includes(searchLower) ||
+                               description.includes(searchLower) ||
+                               source.includes(searchLower);
+                    });
+                }
+
+                // Then apply category filter
+                const filtered = category === 'all'
+                    ? articles
+                    : articles.filter(a => a.category === category);
+
+                renderArticles(filtered);
+                document.getElementById('totalArticles').textContent = filtered.length;
+            }
+        }
+
+        // Set up category tab listeners
+        document.getElementById('categoryTabs').addEventListener('click', (e) => {
+            if (e.target.classList.contains('cat-tab')) {
+                filterByCategory(e.target.dataset.category);
+            }
+        });
+
+        async function fetchFeeds() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            const feed = document.getElementById('newsFeed');
+            const highlightsGrid = document.getElementById('highlightsGrid');
+
+            refreshBtn.classList.add('loading');
+
+            // Show loading states
+            feed.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Fetching AI news from 240+ sources...</div>
+                </div>
+            `;
+            highlightsGrid.innerHTML = `
+                <div class="loading-state" style="grid-column: 1/-1">
+                    <div class="loading-spinner"></div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('/api/feeds');
+                const data = await response.json();
+                allData = data;
+
+                // Update stats
+                const now = new Date();
+                const last24h = data.articles.filter(a =>
+                    (now - new Date(a.pubDate)) < 86400000
+                ).length;
+
+                document.getElementById('totalArticles').textContent = data.articles.length;
+                document.getElementById('totalSources').textContent = data.sources;
+                document.getElementById('newToday').textContent = last24h;
+                document.getElementById('lastUpdated').textContent = `Updated ${formatTimeAgo(data.updated)}`;
+
+                // Render all sections
+                renderHighlights(data.highlights);
+                renderReleases(data.releases);
+                renderLearning(data.tutorials);
+
+                // Apply current category filter
+                filterByCategory(currentCategory);
+
+            } catch (error) {
+                console.error('Error:', error);
+                feed.innerHTML = `
+                    <div class="error-state">
+                        <h3>Connection Error</h3>
+                        <p>Make sure the server is running on localhost:3000</p>
+                    </div>
+                `;
+            }
+
+            refreshBtn.classList.remove('loading');
+        }
+
+        // Client-side search function (instant filtering)
+        function searchArticles(query) {
+            if (!allData) return;
+
+            currentSearchQuery = query;
+
+            const highlightsSection = document.getElementById('highlightsSection');
+            const twoColumnSection = document.getElementById('twoColumnSection');
+
+            // If searching, hide special sections and just show filtered articles
+            if (query && query.trim()) {
+                const searchLower = query.toLowerCase();
+
+                const matchesSearch = (article) => {
+                    const title = (article.title || '').toLowerCase();
+                    const description = (article.description || '').toLowerCase();
+                    const source = (article.source || '').toLowerCase();
+                    return title.includes(searchLower) ||
+                           description.includes(searchLower) ||
+                           source.includes(searchLower);
+                };
+
+                // Filter articles
+                let filteredArticles = allData.articles.filter(matchesSearch);
+
+                // Apply category filter on top
+                if (currentCategory !== 'all') {
+                    filteredArticles = filteredArticles.filter(a => a.category === currentCategory);
+                }
+
+                // Hide special sections when searching
+                highlightsSection.style.display = 'none';
+                twoColumnSection.style.display = 'none';
+
+                // Update count and render
+                document.getElementById('totalArticles').textContent = filteredArticles.length;
+
+                if (filteredArticles.length === 0) {
+                    document.getElementById('newsFeed').innerHTML = `
+                        <div class="empty-state">
+                            <p>No articles found for "<strong>${query}</strong>"</p>
+                            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Try a different search term</p>
+                        </div>
+                    `;
+                } else {
+                    renderArticles(filteredArticles);
+                }
+            } else {
+                // No search - show everything normally
+                highlightsSection.style.display = 'block';
+                twoColumnSection.style.display = 'grid';
+
+                document.getElementById('totalArticles').textContent = allData.articles.length;
+                renderHighlights(allData.highlights);
+                renderReleases(allData.releases);
+                renderLearning(allData.tutorials);
+                filterByCategory(currentCategory);
+            }
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+
+            // Show/hide clear button
+            clearSearchBtn.style.display = query ? 'flex' : 'none';
+
+            // Instant client-side search (no debounce needed)
+            searchArticles(query);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                clearSearchBtn.style.display = 'none';
+                searchArticles('');
+            }
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            searchArticles('');
+        });
+
+        // Initial fetch
+        fetchFeeds();
+
+        // Auto-refresh every 10 minutes (only if not searching)
+        setInterval(() => {
+            if (!currentSearchQuery) {
+                fetchFeeds();
+            }
+        }, 10 * 60 * 1000);
+    </script>
+</body>
+</html>
