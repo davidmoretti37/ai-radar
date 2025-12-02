@@ -1677,11 +1677,13 @@
 
         // Initialisation
         loadSavedNotes();
+        renderNotesList();
         attachNotesListHandler();
         attachNotesTextareaHandler();
 
         // Initial fetch
         fetchFeeds();
+        refreshBookmarkButtons();
 
         // Auto-refresh every 10 minutes (only if not searching and not on notes page)
         setInterval(() => {
